@@ -1,6 +1,7 @@
 # example.py
 
-from API/googleform.py import GoogleForm
+from API.googleform import GoogleForm
+
 
 # Step 1: Ask for form link
 form_url = input("Paste Google Form URL: ")

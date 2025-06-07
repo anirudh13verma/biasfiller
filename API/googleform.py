@@ -1,8 +1,10 @@
 import time
 import random
 import string
+
 from selenium import webdriver
-from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 
@@ -15,13 +17,19 @@ class GoogleForm:
         self.prefill = {}    # Optional pre-fill data
 
     def _start_driver(self):
-        self.driver = webdriver.Chrome(ChromeDriverManager().install())
-        self.driver.get(self.url)
-        time.sleep(2)
+        chrome_options = Options()
+        chrome_options.binary_location = "/snap/bin/chromium"  # or /usr/bin/chromium-browser if you're using apt
+        chrome_options.add_argument("--headless=new")  # use new headless mode (for Chromium 109+)
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-gpu")  # safe
+        chrome_options.add_argument("--disable-software-rasterizer")  # extra safe
 
-    def _stop_driver(self):
-        if self.driver:
-            self.driver.quit()
+        chrome_options.binary_location = "/snap/bin/chromium"
+
+        service = Service(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(service=service, options=chrome_options)
+
 
     def parse_form(self):
         self._start_driver()
